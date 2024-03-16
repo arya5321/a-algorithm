@@ -7,6 +7,7 @@ graph = {
 'E': [('A', 3), ('D', 6)],
 'G': [('B', 9), ('D', 1)]
 }
+
 heuristic={
 'A': 11,
 'B': 6,
@@ -25,31 +26,33 @@ def astar(start_node,stop_node):
     while len(open_set)>0:
         n=None
 
-    for v in open_set:
-        if n is None or g[v]+heuristic[v]<g[n]+heuristic[n]:
-            n=v
-    for (m,weight) in graph[n]:
-        if m not in open_set and m not in closed_set:
-            open_set.add(m)
-            g[m]=g[n]+weight
-            parents[m]=n
-        else:
-            if g[m]>g[n]+weight:
+        for v in open_set:
+            if n is None or g[v]+heuristic[v]<g[n]+heuristic[n]:
+                n=v
+        
+        for (m,weight) in graph[n]:
+            if m not in open_set and m not in closed_set:
+                open_set.add(m)
                 g[m]=g[n]+weight
                 parents[m]=n
-            if m in closed_set:
-                closed_set.remove(n)
-                open_set.add(n)
-    if n==stop_node:
-        path=[]
-        while parents[n]!=n:
-            path.append(n)
-            n=parents[n]
-        path.append(start_node)
-        path.reverse()
-        return path
-    open_set.remove(n)
-    closed_set.add(n)
+            else:
+                if g[m]>g[n]+weight:
+                    g[m]=g[n]+weight
+                    parents[m]=n
+                if m in closed_set:
+                    closed_set.remove(m)
+                    open_set.add(m)
+        
+        if n==stop_node:
+            path=[]
+            while parents[n]!=n:
+                path.append(n)
+                n=parents[n]
+            path.append(start_node)
+            path.reverse()
+            return path
+        open_set.remove(n)
+        closed_set.add(n)
     return None
 
 astar('A','G')
